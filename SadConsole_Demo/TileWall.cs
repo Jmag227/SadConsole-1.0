@@ -4,7 +4,7 @@ using System.Text;
 using SadConsole;
 using Microsoft.Xna.Framework;
 
-namespace GameLoop.cs
+namespace RogueTutorial
 {
     public class TileWall : TileBase
     {

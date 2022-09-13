@@ -4,7 +4,7 @@ using System.Text;
 using SadConsole;
 using Microsoft.Xna.Framework;
 
-namespace GameLoop.cs
+namespace RogueTutorial
 {
     // TileBase is an abstract base class 
     // representing the most basic form of of all Tiles used.
@@ -13,7 +13,7 @@ namespace GameLoop.cs
         
         // Movement and Line of Sight Flags
         public bool IsBlockingMove;
-        public bool IsBlockingLOS;
+        public bool IsBlockingLOS; 
 
         // Tile's name
         protected string Name;

@@ -4,7 +4,7 @@ using System.Text;
 using SadConsole;
 using Microsoft.Xna.Framework;
 
-namespace GameLoop.cs
+namespace RogueTutorial
 {
     // TileFloor is based on TileBase
     // Floor tiles to be used in maps.

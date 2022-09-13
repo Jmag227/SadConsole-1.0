@@ -3,7 +3,7 @@ using SadConsole;
 using Console = SadConsole.Console;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using GameLoop.cs;
+
 
 namespace RogueTutorial
 {
@@ -114,7 +114,7 @@ namespace RogueTutorial
         private static void CreatePlayer()
         {
             player = new Player(Color.Yellow, Color.Transparent);
-            player.Position = new Point(20, 10);
+            player.Position = new Point(5, 5);
         }
 
         // Carve out a rectangular floor using the TileFloors class
@@ -145,7 +145,7 @@ namespace RogueTutorial
             }
         }
 
-        // IsTileWalkable checks
+         // IsTileWalkable checks
         // to see if the actor has tried
         // to walk off the map or into a non-walkable tile
         // Returns true if the tile location is walkable
@@ -160,7 +160,7 @@ namespace RogueTutorial
             // then return whether the tile is walkable
             return !_tiles[location.Y * Width + location.X].IsBlockingMove;
         }
-
+        
 
 
 

@@ -4,7 +4,7 @@ using System.Text;
 using SadConsole;
 using Microsoft.Xna.Framework;
 
-namespace GameLoop.cs
+namespace RogueTutorial
 {
     public abstract class Actor : SadConsole.Entities.Entity
     {
@@ -25,8 +25,14 @@ namespace GameLoop.cs
         // returns true if actor was able to move, false if failed to move
         public bool MoveBy(Point positionChange)
         {
-            Position += positionChange;
-            return true;
+            // Check the map if we can move to this new position
+            if (RogueTutorial.GameLoop.IsTileWalkable(Position + positionChange))
+            {
+                Position += positionChange;
+                return true;
+            }
+            else
+                return false;
         }
 
         // Moves the Actor TO newPosition location
