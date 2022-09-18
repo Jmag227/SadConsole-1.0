@@ -26,7 +26,7 @@ namespace RogueTutorial
         public bool MoveBy(Point positionChange)
         {
             // Check the map if we can move to this new position
-            if (RogueTutorial.GameLoop.IsTileWalkable(Position + positionChange))
+            if (GameLoop.GameMap.IsTileWalkable(Position + positionChange))
             {
                 Position += positionChange;
                 return true;
