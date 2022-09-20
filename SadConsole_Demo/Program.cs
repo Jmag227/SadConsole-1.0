@@ -3,28 +3,24 @@ using SadConsole;
 using Console = SadConsole.Console;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using SadConsole.Components;
 
 namespace RogueTutorial
 {
     class GameLoop
     {
 
-        public const int Width = 80;
-        public const int Height = 25;
-        private static Player player;
+        public const int GameWidth = 80;
+        public const int GameHeight = 25;
 
-        public static Map GameMap;
-        private static int _mapWidth = 100;
-        private static int _mapHeight = 100;
-        private static int _maxRooms = 500;
-        private static int _minRoomSize = 4;
-        private static int _maxRoomSize = 15;
+        // Managers
+        public static UIManager UIManager;
+        public static World World;
 
         static void Main(string[] args)
         {
             // Setup the engine and create the main window.
-            SadConsole.Game.Create(Width, Height);
+            SadConsole.Game.Create(GameWidth, GameHeight);
 
             // Hook the start event so we can add consoles to the system.
             SadConsole.Game.OnInitialize = Init;
@@ -44,76 +40,20 @@ namespace RogueTutorial
 
         private static void Update(GameTime time)
         {
-            // Called each logic update.
-            CheckKeyboard();
+
         }
 
-        private static void CheckKeyboard()
-        {
-            // As an example, we'll use the F5 key to make the game full screen
-            if (SadConsole.Global.KeyboardState.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.F5))
-            {
-                SadConsole.Settings.ToggleFullScreen();
-            }
-
-            // Keyboard movement for Player character: Up arrow
-            // Decrement player's Y coordinate by 1
-            if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Up))
-            {
-                player.MoveBy(new Point(0, -1));
-            }
-
-            // Keyboard movement for Player character: Down arrow
-            // Increment player's Y coordinate by 1
-            if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Down))
-            {
-                player.MoveBy(new Point(0, 1));
-            }
-
-            // Keyboard movement for Player character: Left arrow
-            // Decrement player's X coordinate by 1
-            if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Left))
-            {
-                player.MoveBy(new Point(-1, 0));
-            }
-
-            // Keyboard movement for Player character: Right arrow
-            // Increment player's X coordinate by 1
-            if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Right))
-            {
-                player.MoveBy(new Point(1, 0));
-            }
-        }
         private static void Init()
         {
-            // Initialize an empty map
-            GameMap = new Map(_mapWidth, _mapHeight);
+            //Instantiate the UIManager
+            UIManager = new UIManager();
 
-            // Instantiate a new map generator and
-            // populate the map with rooms and tunnels
-            MapGenerator mapGen = new MapGenerator();
-            GameMap = mapGen.GenerateMap(_mapWidth, _mapHeight, _maxRooms, _minRoomSize, _maxRoomSize);
+            // Build the world!
+            World = new World();
 
-            // Create a console using gameMap's tiles
-            Console startingConsole = new ScrollingConsole(GameMap.Width, GameMap.Height, Global.FontDefault, new Rectangle(0, 0, Width, Height), GameMap.Tiles);
-
-            // Set our new console as the thing to render and process
-            SadConsole.Global.CurrentScreen = startingConsole;
-
-            // create an instance of player
-            CreatePlayer();
-
-            // add the player Entity to our only console
-            // so it will display on screen
-            startingConsole.Children.Add(player);
-        }
-
-        // Create a player using the Player class
-        // and set its starting position
-        private static void CreatePlayer()
-        {
-            player = new Player(Color.Yellow, Color.Transparent);
-            player.Position = new Point(5, 5);
+            // Now let the UIManager create its consoles
+            // so they can use the World data
+            UIManager.CreateConsoles();
         }
     }
 
