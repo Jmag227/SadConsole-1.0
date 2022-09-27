@@ -25,8 +25,8 @@ namespace RogueTutorial
         // returns true if actor was able to move, false if failed to move
         public bool MoveBy(Point positionChange)
         {
-            // Check the map if we can move to this new position
-            if (GameLoop.GameMap.IsTileWalkable(Position + positionChange))
+            // Check the current map if we can move to this new position
+            if (GameLoop.World.CurrentMap.IsTileWalkable(Position + positionChange))
             {
                 Position += positionChange;
                 return true;
@@ -34,6 +34,7 @@ namespace RogueTutorial
             else
                 return false;
         }
+
 
         // Moves the Actor TO newPosition location
         // returns true if actor was able to move, false if failed to move

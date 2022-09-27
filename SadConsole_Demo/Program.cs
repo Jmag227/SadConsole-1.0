@@ -53,7 +53,7 @@ namespace RogueTutorial
 
             // Now let the UIManager create its consoles
             // so they can use the World data
-            UIManager.CreateConsoles();
+            UIManager.Init();
         }
     }
 

@@ -44,7 +44,7 @@ namespace RogueTutorial
         }
 
         // Create a player using the Player class
-        // and set its starting position
+        // and set its starting position 
         private void CreatePlayer()
         {
             Player = new Player(Color.Yellow, Color.Transparent);
