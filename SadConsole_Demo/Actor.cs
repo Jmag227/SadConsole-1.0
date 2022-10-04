@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SadConsole;
 using Microsoft.Xna.Framework;
+using RogueTutorial.UI;
 
 namespace RogueTutorial
 {
