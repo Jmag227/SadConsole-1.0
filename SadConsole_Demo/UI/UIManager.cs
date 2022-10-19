@@ -4,7 +4,7 @@ using System;
 using SadConsole.Controls;
 
 
-namespace RogueTutorial
+namespace RogueTutorial.UI
 {
     // Creates/Holds/Destroys all consoles used in the game
     // and makes consoles easily addressable from a central place.
