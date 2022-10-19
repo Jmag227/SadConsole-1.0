@@ -12,6 +12,7 @@ namespace RogueTutorial.UI
     {
         public ScrollingConsole MapConsole;
         public Window MapWindow;
+        public MessageLogWindow MessageLog;
 
         public UIManager()
         {
@@ -30,6 +31,21 @@ namespace RogueTutorial.UI
         {
             CreateConsoles();
             CreateMapWindow(GameLoop.GameWidth / 2, GameLoop.GameHeight / 2, "Game Map");
+
+            //test code 
+            MessageLog = new MessageLogWindow(GameLoop.GameWidth / 2, GameLoop.GameHeight / 2, "Message Log");
+            Children.Add(MessageLog);
+            MessageLog.Show();
+            MessageLog.Position = new Point(0, GameLoop.GameHeight / 2);            
+            MessageLog.Add("Testing 1212");
+            MessageLog.Add("Testing 1");
+            MessageLog.Add("Testing");
+            MessageLog.Add("Testing 122");
+            MessageLog.Add("Testing 51");
+            MessageLog.Add("Testing");
+            MessageLog.Add("Testing 162");
+            MessageLog.Add("Testing 16");
+            MessageLog.Add("Testing Last");
         }
 
         // Creates all child consoles to be managed
@@ -54,17 +70,11 @@ namespace RogueTutorial.UI
         // based on the button pressed.
         private void CheckKeyboard()
         {
-            // As an example, we'll use the F5 key to make the game full screen
-            if (SadConsole.Global.KeyboardState.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.F5))
-            {
-                SadConsole.Settings.ToggleFullScreen();
-            }
-
             // Keyboard movement for Player character: Up arrow
             // Decrement player's Y coordinate by 1
             if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Up))
             {
-                GameLoop.World.Player.MoveBy(new Point(0, -1));
+                GameLoop.CommandManager.MoveActorBy(GameLoop.World.Player, new Point(0, -1));
                 CenterOnActor(GameLoop.World.Player);
             }
 
@@ -72,7 +82,7 @@ namespace RogueTutorial.UI
             // Increment player's Y coordinate by 1
             if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Down))
             {
-                GameLoop.World.Player.MoveBy(new Point(0, 1));
+                GameLoop.CommandManager.MoveActorBy(GameLoop.World.Player, new Point(0, 1));
                 CenterOnActor(GameLoop.World.Player);
             }
 
@@ -80,7 +90,7 @@ namespace RogueTutorial.UI
             // Decrement player's X coordinate by 1
             if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Left))
             {
-                GameLoop.World.Player.MoveBy(new Point(-1, 0));
+                GameLoop.CommandManager.MoveActorBy(GameLoop.World.Player, new Point(-1, 0));
                 CenterOnActor(GameLoop.World.Player);
             }
 
@@ -88,7 +98,7 @@ namespace RogueTutorial.UI
             // Increment player's X coordinate by 1
             if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Right))
             {
-                GameLoop.World.Player.MoveBy(new Point(1, 0));
+                GameLoop.CommandManager.MoveActorBy(GameLoop.World.Player, new Point(1, 0));
                 CenterOnActor(GameLoop.World.Player);
             }
         }

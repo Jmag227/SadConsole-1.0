@@ -4,8 +4,9 @@ using Console = SadConsole.Console;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SadConsole.Components;
+using RogueTutorial.Commands;
 
-namespace RogueTutorial
+namespace RogueTutorial.UI
 {
     class GameLoop
     {
@@ -15,6 +16,9 @@ namespace RogueTutorial
 
         // Managers
         public static UIManager UIManager;
+        public static CommandManager CommandManager;
+
+
         public static World World;
 
         static void Main(string[] args)
@@ -47,6 +51,9 @@ namespace RogueTutorial
         {
             //Instantiate the UIManager
             UIManager = new UIManager();
+
+            //Instantiate a new CommandManager
+            CommandManager = new CommandManager();
 
             // Build the world!
             World = new World();
