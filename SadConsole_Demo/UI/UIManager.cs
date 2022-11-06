@@ -2,17 +2,18 @@
 using SadConsole;
 using System;
 using SadConsole.Controls;
-
+using RogueTutorial.Entities;
 
 namespace RogueTutorial.UI
 {
     // Creates/Holds/Destroys all consoles used in the game
     // and makes consoles easily addressable from a central place.
+   
     public class UIManager : ContainerConsole
     {
-        public ScrollingConsole MapConsole;
-        public Window MapWindow;
+        public SadConsole.ScrollingConsole MapConsole;
         public MessageLogWindow MessageLog;
+        public Window MapWindow;
 
         public UIManager()
         {
@@ -26,32 +27,11 @@ namespace RogueTutorial.UI
             Parent = SadConsole.Global.CurrentScreen;
         }
 
-        // Initializes all windows and consoles
-        public void Init()
-        {
-            CreateConsoles();
-            CreateMapWindow(GameLoop.GameWidth / 2, GameLoop.GameHeight / 2, "Game Map");
-
-            //test code 
-            MessageLog = new MessageLogWindow(GameLoop.GameWidth / 2, GameLoop.GameHeight / 2, "Message Log");
-            Children.Add(MessageLog);
-            MessageLog.Show();
-            MessageLog.Position = new Point(0, GameLoop.GameHeight / 2);            
-            MessageLog.Add("Testing 1212");
-            MessageLog.Add("Testing 1");
-            MessageLog.Add("Testing");
-            MessageLog.Add("Testing 122");
-            MessageLog.Add("Testing 51");
-            MessageLog.Add("Testing");
-            MessageLog.Add("Testing 162");
-            MessageLog.Add("Testing 16");
-            MessageLog.Add("Testing Last");
-        }
-
         // Creates all child consoles to be managed
         public void CreateConsoles()
         {
-            MapConsole = new SadConsole.ScrollingConsole(GameLoop.World.CurrentMap.Width, GameLoop.World.CurrentMap.Height, Global.FontDefault, new Rectangle(0, 0, GameLoop.GameWidth, GameLoop.GameHeight), GameLoop.World.CurrentMap.Tiles);
+            // Temporarily create a console with *no* tile data that will later be replaced with map data
+            MapConsole = new ScrollingConsole(GameLoop.GameWidth, GameLoop.GameHeight);
         }
 
         // centers the viewport camera on an Actor
@@ -70,6 +50,13 @@ namespace RogueTutorial.UI
         // based on the button pressed.
         private void CheckKeyboard()
         {
+
+            // As an example, we'll use the F5 key to make the game full screen
+            if (SadConsole.Global.KeyboardState.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.F5))
+            {
+                SadConsole.Settings.ToggleFullScreen();
+            }
+
             // Keyboard movement for Player character: Up arrow
             // Decrement player's Y coordinate by 1
             if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Up))
@@ -101,6 +88,114 @@ namespace RogueTutorial.UI
                 GameLoop.CommandManager.MoveActorBy(GameLoop.World.Player, new Point(1, 0));
                 CenterOnActor(GameLoop.World.Player);
             }
+
+            // Undo last command: Z
+            if (SadConsole.Global.KeyboardState.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Z))
+            {
+                GameLoop.CommandManager.UndoMoveActorBy();
+                CenterOnActor(GameLoop.World.Player);
+            }
+
+            // Repeat last command: X
+            if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.X))
+            {
+                GameLoop.CommandManager.RedoMoveActorBy();
+                CenterOnActor(GameLoop.World.Player);
+            }
+        }
+
+
+        // Initializes all windows and consoles
+        public void Init()
+        {
+            CreateConsoles();
+
+            //Message Log initialization
+            MessageLog = new MessageLogWindow(GameLoop.GameWidth, GameLoop.GameHeight / 2, "Message Log");
+            Children.Add(MessageLog);
+            MessageLog.Show();
+            MessageLog.Position = new Point(0, GameLoop.GameHeight / 2);
+
+            MessageLog.Add("Testing 123");
+            MessageLog.Add("Testing 123");
+            MessageLog.Add("Testing 123");
+            MessageLog.Add("Testing 123");
+            MessageLog.Add("Testing 123");
+            MessageLog.Add("Testing 123");
+            MessageLog.Add("Testing 12");
+            MessageLog.Add("Testing 1");
+            MessageLog.Add("Testing");
+            MessageLog.Add("Testing 12");
+            MessageLog.Add("Testing 1");
+            MessageLog.Add("Testing");
+            MessageLog.Add("Testing 12");
+            MessageLog.Add("Testing 1");
+            MessageLog.Add("Testing Last");
+
+            // Load the map into the MapConsole
+            LoadMap(GameLoop.World.CurrentMap);
+
+            // Now that the MapConsole is ready, build the Window
+            CreateMapWindow(GameLoop.GameWidth / 2, GameLoop.GameHeight / 2, "Game Map");
+            UseMouse = true;
+
+            // Start the game with the camera focused on the player
+            CenterOnActor(GameLoop.World.Player);
+        }
+
+        // Adds the entire list of entities found in the
+        // World.CurrentMap's Entities SpatialMap to the
+        // MapConsole, so they can be seen onscreen
+        private void SyncMapEntities(Map map)
+        {
+            // remove all Entities from the console first
+            MapConsole.Children.Clear();
+
+            // Now pull all of the entities into the MapConsole in bulk
+            foreach (Entity entity in map.Entities.Items)
+            {
+                MapConsole.Children.Add(entity);
+            }
+
+            // Subscribe to the Entities ItemAdded listener, so we can keep our MapConsole entities in sync
+            map.Entities.ItemAdded += OnMapEntityAdded;
+
+            // Subscribe to the Entities ItemRemoved listener, so we can keep our MapConsole entities in sync
+            map.Entities.ItemRemoved += OnMapEntityRemoved;
+        }
+
+        // Remove an Entity from the MapConsole every time the Map's Entity collection changes
+        public void OnMapEntityRemoved(object sender, GoRogue.ItemEventArgs<Entity> args)
+        {
+            MapConsole.Children.Remove(args.Item);
+        }
+
+        // Add an Entity to the MapConsole every time the Map's Entity collection changes
+        public void OnMapEntityAdded(object sender, GoRogue.ItemEventArgs<Entity> args)
+        {
+            MapConsole.Children.Add(args.Item);
+        }
+
+        // Loads a Map into the MapConsole
+        private void LoadMap(Map map)
+        {
+            // First load the map's tiles into the console
+            MapConsole = new SadConsole.ScrollingConsole(GameLoop.World.CurrentMap.Width, GameLoop.World.CurrentMap.Height, Global.FontDefault, new Rectangle(0, 0, GameLoop.GameWidth, GameLoop.GameHeight), map.Tiles);
+
+            // Now Sync all of the map's entities
+            SyncMapEntities(map);
+        }
+
+        // Adds an Entity so it renders onscreen
+        public void AddEntity(Entity entity)
+        {
+            MapConsole.Children.Add(entity);
+        }
+
+        // Removes an Entity so it no longer renders onscreen
+        public void RemoveEntity(Entity entity)
+        {
+            MapConsole.Children.Remove(entity);
         }
 
         // Creates a window that encloses a map console
@@ -141,13 +236,9 @@ namespace RogueTutorial.UI
             // The MapWindow becomes a child console of the UIManager
             Children.Add(MapWindow);
 
-            // Add the player to the MapConsole's render list
-            MapConsole.Children.Add(GameLoop.World.Player);
-
             // Without this, the window will never be visible on screen
             MapWindow.Show();
         }
-
     }
 
 }

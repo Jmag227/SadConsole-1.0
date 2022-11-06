@@ -5,15 +5,17 @@ using SadConsole;
 using Microsoft.Xna.Framework;
 using RogueTutorial.UI;
 
-namespace RogueTutorial
+namespace RogueTutorial.Entities
 {
-    public abstract class Actor : SadConsole.Entities.Entity
+    public abstract class Actor : Entity
     {
-        private int _health; //current health
-        private int _maxHealth; //maximum possible health
-
-        public int Health { get { return _health; } set { _health = value; } } // public getter for current health
-        public int MaxHealth { get { return _maxHealth; } set { _maxHealth = value; } } // public setter for current health
+        public int Health { get; set; } // current health
+        public int MaxHealth { get; set; } // maximum health
+        public int Attack { get; set; } // attack strength
+        public int AttackChance { get; set; } // percent chance of successful hit
+        public int Defense { get; set; } // defensive strength
+        public int DefenseChance { get; set; } // percent chance of successfully blocking a hit
+        public int Gold { get; set; } // amount of gold carried
 
         protected Actor(Color foreground, Color background, int glyph, int width = 1, int height = 1) : base(width, height)
         {
@@ -29,12 +31,22 @@ namespace RogueTutorial
             // Check the current map if we can move to this new position
             if (GameLoop.World.CurrentMap.IsTileWalkable(Position + positionChange))
             {
+                // if there's a monster here,
+                // do a bump attack
+                Monster monster = GameLoop.World.CurrentMap.GetEntityAt<Monster>(Position + positionChange);
+                if (monster != null)
+                {
+                    GameLoop.CommandManager.Attack(this, monster);
+                    return true;
+                }
+
                 Position += positionChange;
                 return true;
             }
             else
                 return false;
         }
+    
 
 
         // Moves the Actor TO newPosition location
